@@ -1,24 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+
+import {
+  ClipboardItem as PolyfillClipboardItem,
+  write as writeToClipboardPolyfill,
+} from "clipboard-polyfill";
+
+import "./App.css";
 
 function App() {
+  const copy2Clipboard = (plain: string, html: string) => {
+    const clipboardItemFields = {
+      "text/plain": new Blob([plain], { type: "text/plain" }),
+      "text/html": new Blob([html], { type: "text/html" }),
+    };
+
+    const clipboardItem = new PolyfillClipboardItem(clipboardItemFields);
+    writeToClipboardPolyfill([clipboardItem]);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button
+        onClick={() => copy2Clipboard("plain text", "<h1>html body</h1>")}
+      >
+        copy
+      </button>
     </div>
   );
 }
